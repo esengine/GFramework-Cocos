@@ -9,7 +9,7 @@ export class RenderSystem extends gs.System {
     }
 
     protected onComponentAdded(entity: gs.Entity): void {
-        console.log(`组件添加 ${entity.getId()}`);
+        // console.log(`组件添加 ${entity.getId()}`);
     }
 
     update(entities: gs.Entity[]): void {

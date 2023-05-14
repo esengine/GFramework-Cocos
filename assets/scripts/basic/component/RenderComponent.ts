@@ -1,4 +1,4 @@
-import { Color, Node, Sprite, instantiate, math } from "cc";
+import { BoxCollider2D, Color, Contact2DType, ICollisionEvent, Node, RigidBody2D, Sprite, instantiate, math } from "cc";
 import { PositionComponent } from "./PositionComponent";
 import { ShapeComponent } from "./ShapeComponent";
 
