@@ -38,6 +38,31 @@ export class QuadtreeNode {
         return isInsideX && isInsideY;
     }
 
+    /**
+     * 检查实体的边界是否与节点的边界相交
+     * @param entity 
+     */
+    isIntersecting(entity: gs.Entity): boolean {
+        let { position, size } = this.entityToPositionAndSize(entity);
+        let halfSize = size.divide2f(2, 2);
+
+        // 实体的边界
+        let entityLeft = position.x - halfSize.x;
+        let entityRight = position.x + halfSize.x;
+        let entityTop = position.y + halfSize.y;
+        let entityBottom = position.y - halfSize.y;
+
+        // 节点的边界
+        let nodeLeft = this.topLeft.x;
+        let nodeRight = this.bottomRight.x;
+        let nodeTop = this.bottomRight.y;
+        let nodeBottom = this.topLeft.y;
+
+        // 如果实体的边界与节点的边界相交，返回 true
+        return entityLeft < nodeRight && entityRight > nodeLeft &&
+            entityTop > nodeBottom && entityBottom < nodeTop;
+    }
+
     insert(entity: gs.Entity): void {
         if (this.isEntityInside(entity)) {
             this.spatialHash.insert(entity);

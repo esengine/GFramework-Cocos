@@ -34,10 +34,13 @@ export class Quadtree {
             (this.root.topLeft.x + this.root.bottomRight.x) / 2,
             (this.root.topLeft.y + this.root.bottomRight.y) / 2
         );
-        let newHalfDimension = new Vec2(
-            Math.abs(newCenter.x - position.x) * 2,
-            Math.abs(newCenter.y - position.y) * 2
+    
+        let oldHalfDimension = new Vec2(
+            Math.abs(this.root.bottomRight.x - this.root.topLeft.x) / 2,
+            Math.abs(this.root.bottomRight.y - this.root.topLeft.y) / 2
         );
+    
+        let newHalfDimension = oldHalfDimension.multiply2f(2, 2);
     
         let newRoot = new QuadtreeNode(newCenter, newHalfDimension, this.maxEntities, this.entityToPositionAndSize);
     
@@ -68,7 +71,7 @@ export class Quadtree {
                     this.insertHelper(entity, child);
                 }
             }
-            node.entities = [];
+            node.entities = [];  // 清空父节点的实体列表
         }
     }
 
@@ -81,12 +84,13 @@ export class Quadtree {
     retrieveHelper(entity: gs.Entity, node: QuadtreeNode, result: gs.Entity[]) {
         if (node.children.length !== 0) {
             for (let child of node.children) {
-                if (child.isEntityInside(entity)) {
+                // 只有当子节点的边界与实体的边界相交时，才处理这个子节点
+                if (child.isEntityInside(entity) || child.isIntersecting(entity)) {
                     this.retrieveHelper(entity, child, result);
                 }
             }
         }
-    
+
         result.push(...node.entities);
     }
 
@@ -108,7 +112,10 @@ export class Quadtree {
         let index = node.entities.indexOf(entity);
         if (index !== -1) {
             node.entities.splice(index, 1);
-            node.spatialHash.remove(entity);
+            // 保持 spatialHash 更新
+            if (node.spatialHash) {
+                node.spatialHash.remove(entity);
+            }
             return true;
         }
 
@@ -117,9 +124,6 @@ export class Quadtree {
 
     clear(): void {
         this.clearHelper(this.root);
-        this.root.entities = [];
-        this.root.children = [];
-        this.root.spatialHash.clear();
     }
 
     private clearHelper(node: QuadtreeNode): void {
