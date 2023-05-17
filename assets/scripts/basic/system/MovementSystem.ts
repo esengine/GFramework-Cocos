@@ -1,25 +1,27 @@
 import { MovementComponent } from "../component/MovementComponent";
 import { PositionComponent } from "../component/PositionComponent";
-import { RenderComponent } from "../component/RenderComponent";
 
 export class MovementSystem extends gs.System {
     constructor(entityManager: gs.EntityManager) {
-        super(entityManager, 0, gs.Matcher.empty().all(PositionComponent, MovementComponent, RenderComponent));
+        super(entityManager, 0, gs.Matcher.empty().all(gs.physics.PhysicsComponent, PositionComponent, MovementComponent));
     }
    
     public update(entities: gs.Entity[]): void {
         const deltaTime = gs.TimeManager.getInstance().deltaTime;
         for (const entity of entities) {
-            const position = entity.getComponent(PositionComponent);
             const movement = entity.getComponent(MovementComponent);
-            const render = entity.getComponent(RenderComponent);
+            const position = entity.getComponent(PositionComponent);
+            const physics = entity.getComponent(gs.physics.PhysicsComponent);
+            
+            var velocityX = movement.velocityX * deltaTime * 10;
+            var velocityY = movement.velocityY * deltaTime * 10;
 
             // 更新位置
-            position.x += movement.velocityX * deltaTime * 10;
-            position.y += movement.velocityY * deltaTime * 10;
+            position.x += velocityX;
+            position.y += velocityY;
             
-            // 更新Cocos Creator游戏对象的位置
-            render.node.setPosition(position.x, position.y);
+            physics.aabb.velocityX = velocityX;
+            physics.aabb.velocityY = velocityY;
         }
     }
 }

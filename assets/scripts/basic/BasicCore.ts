@@ -6,8 +6,8 @@ import { RenderComponent } from './component/RenderComponent';
 import { MovementSystem } from './system/MovementSystem';
 import { CollisionSystem } from './system/CollisionSystem';
 import { RenderSystem } from './system/RenderSystem';
-import { PhysicsSystem } from '../physics/PhysicsSystem';
 import { CollisionComponent } from './component/CollisionComponent';
+import { AABBSystem } from './system/AABBSystem';
 const { ccclass, property } = _decorator;
 
 @ccclass('BasicCore')
@@ -20,7 +20,7 @@ export class BasicCore extends Component {
     private sprite: Node;
 
     start() {
-        this.entityManager = new gs.EntityManager([PositionComponent, MovementComponent, ShapeComponent, RenderComponent, CollisionComponent]);
+        this.entityManager = new gs.EntityManager();
         this.systemManager = new gs.SystemManager(this.entityManager);
         this.timeManager = gs.TimeManager.getInstance();
         this.canvas = find('Canvas');
@@ -29,15 +29,22 @@ export class BasicCore extends Component {
         this.systemManager.registerSystem(new MovementSystem(this.entityManager));
         this.systemManager.registerSystem(new CollisionSystem(this.entityManager));
         this.systemManager.registerSystem(new RenderSystem(this.entityManager));
-        this.systemManager.registerSystem(new PhysicsSystem(this.entityManager));
+        const rectangle = new gs.physics.Rectangle(-480, -320, 960, 640);
+        this.systemManager.registerSystem(new gs.physics.PhysicsSystem(this.entityManager, rectangle));
+        this.systemManager.registerSystem(new AABBSystem(this.entityManager));
 
-        for (let i = 0; i < 5000; i ++) {
+        for (let i = 0; i < 2000; i ++) {
             const entity = this.entityManager.createEntity();
-            entity.addComponent(PositionComponent, (Math.random() - 0.5) * 960, (Math.random() - 0.5) * 640);
+            const positionX = (Math.random() - 0.5) * 960;
+            const positionY = (Math.random() - 0.5) * 640;
+            const width = 10;
+            const height = 10;
+            entity.addComponent(PositionComponent, positionX, positionY);
             entity.addComponent(MovementComponent, Math.random() * 2 - 1, Math.random() * 2 - 1);
-            entity.addComponent(ShapeComponent, 10, 10);
+            entity.addComponent(ShapeComponent, width, height);
             entity.addComponent(RenderComponent, this.canvas, this.sprite);
             entity.addComponent(CollisionComponent);
+            entity.addComponent(gs.physics.PhysicsComponent, new gs.physics.AABB(positionX, positionY, width, height));
         }
     }
 

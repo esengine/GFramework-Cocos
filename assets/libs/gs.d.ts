@@ -135,7 +135,7 @@ declare module gs {
          * @param componentType
          * @returns
          */
-        addComponent<T extends Component>(componentType: new (entityId: number) => T, ...args: any[]): T;
+        addComponent<T extends Component>(componentType: ComponentConstructor<T>, ...args: any[]): T;
         /**
          * 获取组件
          * @param componentType
@@ -270,9 +270,9 @@ declare module gs {
          */
         entityFilter(entity: Entity): boolean;
         filterEntities(entities: Entity[]): Entity[];
-        handleComponentChange<T extends Component>(entity: Entity, component: T, added: boolean): void;
-        protected onComponentAdded<T extends Component>(entity: Entity, component: T): void;
-        protected onComponentRemoved<T extends Component>(entity: Entity, component: T): void;
+        handleComponentChange(entity: Entity, component: Component, added: boolean): void;
+        protected onComponentAdded(entity: Entity, component: Component): void;
+        protected onComponentRemoved(entity: Entity, component: Component): void;
         /**
          * 系统注册时的逻辑
          */
@@ -420,13 +420,13 @@ declare module gs {
         private tagToEntities;
         private prefabs;
         systemManager?: SystemManager;
-        constructor(componentClasses?: Array<ComponentConstructor<Component>>, systemManager?: SystemManager);
+        constructor(systemManager?: SystemManager);
         setSystemManager(systemManager: SystemManager): void;
         /**
          * 添加组件管理器
          * @param componentClass 要添加的组件类
          */
-        addComponentManager<T extends Component>(componentClass: ComponentConstructor<T>): void;
+        addComponentManager<T extends Component>(componentClass: ComponentConstructor<T>): ComponentManager<Component>;
         updateFrameNumber(): void;
         getCurrentFrameNumber(): number;
         getInputManager(): InputManager;
@@ -578,13 +578,13 @@ declare module gs {
          * @param entity
          * @param component
          */
-        notifyComponentAdded<T extends Component>(entity: Entity, component: T): void;
+        notifyComponentAdded(entity: Entity, component: Component): void;
         /**
          * 通知所有系统组件已删除
          * @param entity
          * @param component
          */
-        notifyComponentRemoved<T extends Component>(entity: Entity, component: T): void;
+        notifyComponentRemoved(entity: Entity, component: Component): void;
         /**
          * 使特定系统的实体缓存无效。
          * @param system 要使其实体缓存无效的系统
