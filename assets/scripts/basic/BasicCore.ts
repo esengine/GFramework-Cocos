@@ -33,19 +33,43 @@ export class BasicCore extends Component {
         this.systemManager.registerSystem(new gs.physics.PhysicsSystem(this.entityManager, rectangle));
         this.systemManager.registerSystem(new AABBSystem(this.entityManager));
 
-        for (let i = 0; i < 2000; i ++) {
-            const entity = this.entityManager.createEntity();
-            const positionX = (Math.random() - 0.5) * 960;
-            const positionY = (Math.random() - 0.5) * 640;
-            const width = 10;
-            const height = 10;
-            entity.addComponent(PositionComponent, positionX, positionY);
-            entity.addComponent(MovementComponent, Math.random() * 2 - 1, Math.random() * 2 - 1);
-            entity.addComponent(ShapeComponent, width, height);
-            entity.addComponent(RenderComponent, this.canvas, this.sprite);
-            entity.addComponent(CollisionComponent);
-            entity.addComponent(gs.physics.PhysicsComponent, new gs.physics.AABB(positionX, positionY, width, height));
-        }
+        // for (let i = 0; i < 2000; i ++) {
+        //     const entity = this.entityManager.createEntity();
+        //     const positionX = (Math.random() - 0.5) * 960;
+        //     const positionY = (Math.random() - 0.5) * 640;
+        //     const width = 10;
+        //     const height = 10;
+        //     entity.addComponent(PositionComponent, positionX, positionY);
+        //     entity.addComponent(MovementComponent, Math.random() * 2 - 1, Math.random() * 2 - 1);
+        //     entity.addComponent(ShapeComponent, width, height);
+        //     entity.addComponent(RenderComponent, this.canvas, this.sprite);
+        //     entity.addComponent(CollisionComponent);
+        //     entity.addComponent(gs.physics.PhysicsComponent, new gs.physics.AABB(positionX, positionY, width, height));
+        // }
+
+        const entity = this.entityManager.createEntity();
+        const positionX = 0;
+        const positionY = 0;
+        const width = 10;
+        const height = 10;
+        entity.addComponent(PositionComponent, positionX, positionY);
+        // entity.addComponent(MovementComponent, Math.random() * 2 - 1, Math.random() * 2 - 1);
+        entity.addComponent(ShapeComponent, width, height);
+        entity.addComponent(RenderComponent, this.canvas, this.sprite);
+        entity.addComponent(CollisionComponent);
+        entity.addComponent(gs.physics.PhysicsComponent, new gs.physics.AABB(positionX, positionY, width, height));
+
+        const entity1 = this.entityManager.createEntity();
+        const positionX1 = 5;
+        const positionY1 = 5;
+        const width1 = 10;
+        const height1 = 10;
+        entity1.addComponent(PositionComponent, positionX1, positionY1);
+        // entity.addComponent(MovementComponent, Math.random() * 2 - 1, Math.random() * 2 - 1);
+        entity1.addComponent(ShapeComponent, width1, height1);
+        entity1.addComponent(RenderComponent, this.canvas, this.sprite);
+        entity1.addComponent(CollisionComponent);
+        entity1.addComponent(gs.physics.PhysicsComponent, new gs.physics.AABB(positionX1, positionY1, width1, height1));
     }
 
     update(deltaTime: number) {
