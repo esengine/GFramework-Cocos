@@ -1,9 +1,7 @@
 export class MovementComponent extends gs.Component {
-    public velocityX: number;
-    public velocityY: number;
+    public velocity: gs.physics.Vector2;
 
     onInitialize(velocityX: number, velocityY: number): void {
-        this.velocityX = velocityX;
-        this.velocityY = velocityY;
+        this.velocity = new gs.physics.Vector2(velocityX, velocityY);
     }
 }

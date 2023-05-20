@@ -1,11 +1,9 @@
 import { Color } from "cc";
-import { PositionComponent } from "../component/PositionComponent";
 import { RenderComponent } from "../component/RenderComponent";
-import { ShapeComponent } from "../component/ShapeComponent";
 
 export class RenderSystem extends gs.System {
     constructor(entityManager: gs.EntityManager) {
-        super(entityManager, 0, gs.Matcher.empty().all(PositionComponent, ShapeComponent, RenderComponent))
+        super(entityManager, 0, gs.Matcher.empty().all(gs.physics.Transform, gs.physics.Collider, RenderComponent))
     }
 
     protected onComponentAdded(entity: gs.Entity): void {
@@ -13,5 +11,12 @@ export class RenderSystem extends gs.System {
     }
 
     update(entities: gs.Entity[]): void {
+        for (const entity of entities) {
+            const render = entity.getComponent(RenderComponent);
+            const transform = entity.getComponent(gs.physics.Transform);
+            const colider = entity.getComponent(gs.physics.Collider);
+            render.node.setPosition(transform.position.x.toFloat(), transform.position.y.toFloat());
+            render.sprite.color = colider.isColliding ? new Color(0, 255, 0, 120) : new Color(255, 0, 0, 120);
+        }
     }
 }

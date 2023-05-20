@@ -1,4 +1,20 @@
 declare module gs {
+    class Core {
+        private _entityManager;
+        private _systemManager;
+        private _timeManager;
+        private _plugins;
+        readonly entityManager: EntityManager;
+        readonly systemManager: SystemManager;
+        private static _instance;
+        static readonly instance: Core;
+        private constructor();
+        private onInit;
+        registerPlugin(plugin: IPlugin): void;
+        update(deltaTime: number): void;
+    }
+}
+declare module gs {
     class ObjectPool<T> {
         private createFn;
         private resetFn;
@@ -37,10 +53,10 @@ declare module gs {
          */
         off(eventType: string, listener: EventListener): void;
         /**
-         * 用于触发事件。该方法将遍历所有订阅给定事件类型的侦听器，并调用它们
-         * @param event
-         */
-        emit(type: string, data: any): void;
+        * 用于触发事件。该方法将遍历所有订阅给定事件类型的侦听器，并调用它们
+        * @param event
+        */
+        emitEvent(event: Event): void;
     }
 }
 declare module gs {
@@ -212,7 +228,7 @@ declare module gs {
         on(eventType: string, listener: EventListener): void;
         once(eventType: string, callback: (event: Event) => void): void;
         off(eventType: string, listener: EventListener): void;
-        emit(type: string, data: any): void;
+        emit(event: Event): void;
     }
 }
 declare module gs {
@@ -288,6 +304,9 @@ declare module gs {
         type: string;
         data: any;
         constructor(type: string, data?: any);
+        reset(): void;
+        getType(): string;
+        getData(): any;
     }
 }
 declare module gs {
@@ -361,8 +380,8 @@ declare module gs {
      */
     class ComponentManager<T extends Component> {
         private components;
-        private componentType;
         private componentPool;
+        componentType: ComponentConstructor<T>;
         /**
          * ComponentManager 构造函数
          * @param componentType - 用于创建和管理的组件类型。
@@ -398,10 +417,21 @@ declare module gs {
     }
 }
 declare module gs {
+    class ComponentTypeInfo {
+        readonly index: number;
+        readonly type: new (...args: any[]) => Component;
+        readonly parents: ComponentTypeInfo[];
+        readonly allAncestors: number[];
+        constructor(index: number, type: new (...args: any[]) => Component);
+    }
+}
+declare module gs {
     class ComponentTypeManager {
         private static componentTypes;
+        private static indexToComponentTypes;
         private static nextIndex;
-        static getIndexFor(componentType: new (...args: any[]) => Component): number;
+        static getIndexFor(componentType: new (...args: any[]) => Component): ComponentTypeInfo;
+        static getComponentTypeFor(index: number): Function | undefined;
     }
 }
 declare module gs {
@@ -753,6 +783,13 @@ declare module gs {
          * @param strategy - 新的同步策略实现
          */
         setStrategy(strategy: ISyncStrategy): void;
+    }
+}
+declare module gs {
+    interface IPlugin {
+        name: string;
+        onInit(core: Core): void;
+        onUpdate(deltaTime: number): void;
     }
 }
 declare module gs {

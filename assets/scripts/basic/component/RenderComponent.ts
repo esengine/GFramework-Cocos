@@ -1,20 +1,14 @@
-import { BoxCollider2D, Color, Contact2DType, ICollisionEvent, Node, RigidBody2D, Sprite, instantiate, math } from "cc";
-import { PositionComponent } from "./PositionComponent";
-import { ShapeComponent } from "./ShapeComponent";
+import { Color, Contact2DType, ICollisionEvent, Node, RigidBody2D, Sprite, instantiate, math } from "cc";
 
 export class RenderComponent extends gs.Component {
     node: Node;
-
-    dependencies: gs.ComponentConstructor<gs.Component>[] = [
-        PositionComponent,
-        ShapeComponent
-    ];
+    sprite: Sprite;
 
     onInitialize(scene: Node, sprite: Node): void {
         this.node = instantiate(sprite);
         this.node.setParent(scene);
         this.node.active = true;
-        const s = this.node.getComponent(Sprite);
-        s.color = new Color(math.random() * 255, math.random() * 255, math.random() * 255, 120);
+        this.sprite = this.node.getComponent(Sprite);
+        this.sprite.color = new Color(255, 0, 0, 120);
     }
 }
