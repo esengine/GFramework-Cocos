@@ -27,8 +27,9 @@ declare module gs.physics {
 }
 declare module gs.physics {
     class CollisionResponseSystem extends System {
-        quadTree: QuadTree<Bounds>;
-        constructor(entityManager: EntityManager);
+        spatialHash: SpatialHash<Bounds>;
+        private processed;
+        constructor(entityManager: EntityManager, cellSize?: number);
         update(entities: Entity[]): void;
         calculateVelocityAfterCollision(body1: RigidBody, body2: RigidBody): {
             v1: Vector2;
@@ -61,24 +62,38 @@ declare module gs.physics {
     }
 }
 declare module gs.physics {
+    class Grid<T extends Bounds> {
+        grid: Map<string, Set<T>>;
+        getKey(position: Vector2): string;
+        insert(obj: T): void;
+        retrieve(obj: T): Set<T>;
+        clear(): void;
+    }
+}
+declare module gs.physics {
     class QuadTree<T extends Bounds> {
+        cellSize: number;
         level: number;
         bounds: {
             position: Vector2;
             width: FixedPoint;
             height: FixedPoint;
         };
-        objects: T[];
+        spatialHash: SpatialHash<T>;
         nodes: QuadTree<T>[];
         constructor(level: number, bounds: {
             position: Vector2;
             width: FixedPoint;
             height: FixedPoint;
-        });
+        }, cellSize?: number);
         split(): void;
         insert(obj: T): void;
         getIndex(obj: T): number;
+        getIndexes(obj: T): number[];
         retrieve(returnObjects: Set<T>, obj: T): Set<T>;
+        collidesWith(obj1: T, obj2: T): boolean;
+        retrieveAll(): T[];
+        boundsIntersects(obj: T): boolean;
         clear(): void;
     }
 }
@@ -105,10 +120,13 @@ declare module gs.physics {
     class SpatialHash<T extends Bounds> {
         private cellSize;
         private hashTable;
+        private objectTable;
         constructor(cellSize: number);
         private hash;
         insert(obj: T): void;
         retrieve(obj: T): T[];
+        retrieveAll(): T[];
+        remove(obj: T): void;
         clear(): void;
     }
 }
@@ -149,8 +167,9 @@ declare module gs.physics {
         timeStep: FixedPoint;
         bodies: RigidBody[];
         size: Size;
+        initialPos: Vector2;
         name: string;
-        constructor(gravity?: FixedPoint, timeStep?: FixedPoint, initialSize?: Size);
+        constructor(gravity?: FixedPoint, timeStep?: FixedPoint, initialPos?: Vector2, initialSize?: Size);
         onInit(core: Core): void;
         onUpdate(deltaTime: number): void;
         addBody(body: RigidBody): void;

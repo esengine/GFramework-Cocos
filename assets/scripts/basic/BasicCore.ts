@@ -20,7 +20,9 @@ export class BasicCore extends Component {
         this.core.systemManager.registerSystem(new MovementSystem(this.core.entityManager));
         this.core.systemManager.registerSystem(new RenderSystem(this.core.entityManager));
 
-        for (let i = 0; i < 500; i ++) {
+        this.core.registerPlugin(new gs.physics.World(new gs.physics.FixedPoint(0, -9.81), new gs.physics.FixedPoint(1, 60), new gs.physics.Vector2(-480, -320), new gs.physics.Size(960, 640)));
+
+        for (let i = 0; i < 2000; i ++) {
             const entity = this.core.entityManager.createEntity();
             const positionX = (Math.random() - 0.5) * 960;
             const positionY = (Math.random() - 0.5) * 640;
@@ -32,8 +34,37 @@ export class BasicCore extends Component {
             entity.addComponent(MovementComponent, Math.random() * 2 - 1, Math.random() * 2 - 1);
             entity.addComponent(RenderComponent, this.canvas, this.sprite);
         }
+
+        // const entity = this.core.entityManager.createEntity();
+        // const positionX = 0;
+        // const positionY = 0;
+        // const width = 10;
+        // const height = 10;
+        // entity.addComponent(gs.physics.Transform, positionX, positionY);
+        // entity.addComponent(gs.physics.BoxCollider, new gs.physics.Size(width, height));
+        // entity.addComponent(gs.physics.RigidBody);
+        // entity.addComponent(MovementComponent, 0, 0);
+        // entity.addComponent(RenderComponent, this.canvas, this.sprite);
+
+        // const entity1 = this.core.entityManager.createEntity();
+        // const positionX1 = 12;
+        // const positionY1 = 12;
+        // const width1 = 10;
+        // const height1 = 10;
+        // entity1.addComponent(gs.physics.Transform, positionX1, positionY1);
+        // entity1.addComponent(gs.physics.BoxCollider, new gs.physics.Size(width1, height1));
+        // entity1.addComponent(gs.physics.RigidBody);
+        // entity1.addComponent(MovementComponent, 0, 0);
+        // entity1.addComponent(RenderComponent, this.canvas, this.sprite);
+
+        // const entity2 = this.core.entityManager.createEntity();
+        // entity2.addComponent(gs.physics.Transform, 15, 15);
+        // entity2.addComponent(gs.physics.BoxCollider, new gs.physics.Size(width1, height1));
+        // entity2.addComponent(gs.physics.RigidBody);
+        // entity2.addComponent(MovementComponent, 0, 0);
+        // entity2.addComponent(RenderComponent, this.canvas, this.sprite);
         
-        this.core.registerPlugin(new gs.physics.World());
+        
     }
 
     update(deltaTime: number) {
