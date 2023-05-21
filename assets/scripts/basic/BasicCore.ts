@@ -20,9 +20,9 @@ export class BasicCore extends Component {
         this.core.systemManager.registerSystem(new MovementSystem(this.core.entityManager));
         this.core.systemManager.registerSystem(new RenderSystem(this.core.entityManager));
 
-        this.core.registerPlugin(new gs.physics.World(new gs.physics.FixedPoint(0, -9.81), new gs.physics.FixedPoint(1, 60), new gs.physics.Vector2(-480, -320), new gs.physics.Size(960, 640)));
+        this.core.registerPlugin(new gs.physics.World(new gs.physics.FixedPoint(0, -9.81), new gs.physics.FixedPoint(1, 60), 50));
 
-        for (let i = 0; i < 2000; i ++) {
+        for (let i = 0; i < 3000; i ++) {
             const entity = this.core.entityManager.createEntity();
             const positionX = (Math.random() - 0.5) * 960;
             const positionY = (Math.random() - 0.5) * 640;
