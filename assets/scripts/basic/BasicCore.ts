@@ -20,7 +20,7 @@ export class BasicCore extends Component {
         this.core.systemManager.registerSystem(new MovementSystem(this.core.entityManager));
         this.core.systemManager.registerSystem(new RenderSystem(this.core.entityManager));
 
-        this.core.registerPlugin(new gs.physics.World(new gs.physics.FixedPoint(0, -9.81), new gs.physics.FixedPoint(1, 60), 50));
+        this.core.registerPlugin(new gs.physics.World(new gs.physics.FixedPoint(0, -9.81), new gs.physics.FixedPoint(1 / 60)));
 
         for (let i = 0; i < 5000; i ++) {
             const entity = this.core.entityManager.createEntity();
