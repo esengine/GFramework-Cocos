@@ -7,16 +7,32 @@ export class RenderSystem extends gs.System {
     }
 
     protected onComponentAdded(entity: gs.Entity): void {
-        // console.log(`组件添加 ${entity.getId()}`);
+        const collider = entity.getComponent(gs.physics.Collider);
+        const render = entity.getComponent(RenderComponent);
+
+        // if (collider != null && render != null) {
+        //     collider.onCollisionEnter = this.onCollisionEnter.bind(this, render);
+        //     collider.onCollisionExit = this.onCollisionExit.bind(this, render);
+        // }
     }
 
     update(entities: gs.Entity[]): void {
         for (const entity of entities) {
             const render = entity.getComponent(RenderComponent);
             const transform = entity.getComponent(gs.physics.Transform);
-            const colider = entity.getComponent(gs.physics.Collider);
             render.node.setPosition(transform.position.x.toFloat(), transform.position.y.toFloat());
-            render.sprite.color = colider.isColliding ? new Color(0, 255, 0, 120) : new Color(255, 0, 0, 120);
         }
+    }
+
+    onCollisionEnter(render: RenderComponent): void {
+        render.isColliding = true;
+        render.sprite.fillColor = new Color(0, 180, 0, 255);
+        render.sprite.fill();
+    }
+
+    onCollisionExit(render: RenderComponent): void {
+        render.isColliding = false;
+        render.sprite.fillColor = new Color(180, 0, 0, 255);
+        render.sprite.fill();
     }
 }
